@@ -1,0 +1,28 @@
+name: Publish Helm Chart
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+    secrets:
+      NEXUS_TOKEN:
+        required: true
+
+env:
+  ALPINE_HELM_VERSION: 3.9.2
+  
+jobs:
+  package-and-push:
+    name: Helm package with dependencies
+    runs-on: [self-hosted, main]
+    steps:
+    - uses: actions/checkout@v3
+    - run: sed -i "s/CHART_VERSION/${{ inputs.version }}/g" ./Chart.yaml
+    - run: |
+      docker run -it --rm -v $(pwd):/_ -w /_ alpine/helm:$ALPINE_HELM_VERSION package . -u
+      for file in $(ls *.tgz)
+      do
+        curl -u github:${{ secrets.NEXUS_TOKEN }} --upload-file $file https://nexus.services.bwell.zone/repository/bwell/
+      done
