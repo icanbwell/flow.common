@@ -6,6 +6,9 @@ on:
       version:
         required: true
         type: string
+      repositoryUrl:
+        required: true
+        type: string
     secrets:
       NEXUS_TOKEN:
         required: true
@@ -24,5 +27,5 @@ jobs:
       docker run -it --rm -v $(pwd):/_ -w /_ alpine/helm:$ALPINE_HELM_VERSION package . -u
       for file in $(ls *.tgz)
       do
-        curl -u github:${{ secrets.NEXUS_TOKEN }} --upload-file $file https://nexus.services.bwell.zone/repository/bwell/
+        curl -u github:${{ secrets.NEXUS_TOKEN }} --upload-file $file ${{ inputs.repositoryUrl }}
       done
