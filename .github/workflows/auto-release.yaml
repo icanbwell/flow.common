@@ -3,7 +3,7 @@ name: Tag and release
 on:
   workflow_call:
     secrets:
-      GITHUB_TOKEN:
+      GH_TOKEN:
         required: true
     outputs:
       tag:
@@ -20,21 +20,21 @@ jobs:
       id: tag_version
       uses: mathieudutour/github-tag-action@v6.0
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.GH_TOKEN }}
         default_bump: patch
     - if: contains(github.event.pull_request.labels.*.name, "Minor")
       name: Bump minor version and push tag
       id: tag_version
       uses: mathieudutour/github-tag-action@v6.0
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.GH_TOKEN }}
         default_bump: minor
     - if: contains(github.event.pull_request.labels.*.name, "Major")
       name: Bump major version and push tag
       id: tag_version
       uses: mathieudutour/github-tag-action@v6.0
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.GH_TOKEN }}
         default_bump: major
     - name: Create a Github release
       uses: ncipollo/release-action@v1
