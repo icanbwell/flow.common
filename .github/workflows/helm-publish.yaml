@@ -34,5 +34,3 @@ jobs:
         do
           curl -u github:${{ secrets.NEXUS_TOKEN }} ${{ inputs.repositoryUrl }} --upload-file $file -v
         done
-    - name: Clean up
-      run: rm -fr charts/* *.tgz
