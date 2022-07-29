@@ -3,9 +3,6 @@ name: Publish Helm Chart
 on:
   workflow_call:
     inputs:
-      version:
-        required: true
-        type: string
       repositoryUrl:
         required: true
         type: string
