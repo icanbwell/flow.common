@@ -2,10 +2,6 @@ name: Tag and release
 
 on:
   workflow_call:
-    inputs:
-      BUMP_LEVEL:
-        required: true
-        type: string
     secrets:
       GH_TOKEN:
         required: true
@@ -19,12 +15,29 @@ jobs:
     runs-on: [self-hosted, main]
     steps:
     - uses: actions/checkout@v3
+    - id: bump
+      run: |
+        for label in ${{ join(github.event.pull_request.labels.*.name, " ") }}
+        do
+          if [ $label == "Patch" ]
+          then
+            echo "::set-output level=patch"
+          fi
+          if [ $label == "Minor" ]
+          then
+            echo "::set-output level=minor"
+          fi
+          if [ $label == "Major" ]
+          then
+            echo "::set-output level=major"
+          fi
+        done
     - name: Bump patch version and push tag
       id: tag_version
       uses: mathieudutour/github-tag-action@v6.0
       with:
         github_token: ${{ secrets.GH_TOKEN }}
-        default_bump: ${{ inputs.BUMP_LEVEL }}
+        default_bump: ${{ steps.bump.outputs.level }}
     - name: Create a Github release
       uses: ncipollo/release-action@v1
       with:
