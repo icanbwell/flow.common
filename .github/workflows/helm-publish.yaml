@@ -3,6 +3,9 @@ name: Publish Helm Chart
 on:
   workflow_call:
     inputs:
+      tag:
+        required: true
+        type: string
       repositoryUrl:
         required: true
         type: string
@@ -20,7 +23,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - run: |
-        sed -i "s/CHART_VERSION/$(git tag --points-at HEAD | cut -c2- )/g" ./Chart.yaml
+        sed -i "s/CHART_VERSION/$(echo ${{ inputs.tag }} | cut -c2- )/g" ./Chart.yaml
         docker run --rm -v $(pwd):/_ -w /_ alpine/helm:$ALPINE_HELM_VERSION package . -u
         for file in $(ls *.tgz)
         do
