@@ -19,9 +19,9 @@ jobs:
     runs-on: [self-hosted, main]
     steps:
     - uses: actions/checkout@v3
-    - run: sed -i "s/CHART_VERSION/$(git tag --points-at ${{ env.GITHUB_SHA }} | cut -c2- )/g" ./Chart.yaml
     - run: |
-        docker run -it --rm -v $(pwd):/_ -w /_ alpine/helm:$ALPINE_HELM_VERSION package . -u
+        sed -i "s/CHART_VERSION/$(git tag --points-at ${{ env.GITHUB_SHA }} | cut -c2- )/g" ./Chart.yaml
+        docker run --rm -v $(pwd):/_ -w /_ alpine/helm:$ALPINE_HELM_VERSION package . -u
         for file in $(ls *.tgz)
         do
           curl -u github:${{ secrets.NEXUS_TOKEN }} --upload-file $file ${{ inputs.repositoryUrl }}
