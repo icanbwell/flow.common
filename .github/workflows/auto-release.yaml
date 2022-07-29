@@ -47,4 +47,4 @@ jobs:
         name: Release ${{ steps.tag_version.outputs.new_tag }}
         body: ${{ steps.tag_version.outputs.changelog }}
     - id: tag
-      run: echo "::set-output tag=${{ steps.tag_version.outputs.new_tag }}"
+      run: echo "::set-output name=tag::${{ steps.tag_version.outputs.new_tag }}"
