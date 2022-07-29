@@ -22,12 +22,15 @@ jobs:
     runs-on: [self-hosted, main]
     steps:
     - uses: actions/checkout@v3
-    - env:
+    - name: Update chart version
+      env:
         TAG: ${{ inputs.tag }}
+      run: sed -i "s/CHART_VERSION/$(echo $TAG | cut -c2- )/g" ./Chart.yaml
+    - name: Package Helm chart
+      run: docker run --rm -v $(pwd):/_ -w /_ alpine/helm:$ALPINE_HELM_VERSION package . -u
+    - name: Push to Nexus
       run: |
-        sed -i "s/CHART_VERSION/$(echo $TAG | cut -c2- )/g" ./Chart.yaml
-        docker run --rm -v $(pwd):/_ -w /_ alpine/helm:$ALPINE_HELM_VERSION package . -u
         for file in $(ls *.tgz)
         do
-          curl -u github:${{ secrets.NEXUS_TOKEN }} --upload-file $file ${{ inputs.repositoryUrl }}
+          curl -u github:${{ secrets.NEXUS_TOKEN }} ${{ inputs.repositoryUrl }} --upload-file $file -v
         done
