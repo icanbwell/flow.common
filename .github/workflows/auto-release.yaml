@@ -23,15 +23,15 @@ jobs:
         do
           if [ $label == "Patch" ]
           then
-            echo "::set-output level=patch"
+            echo "::set-output name=level::patch"
           fi
           if [ $label == "Minor" ]
           then
-            echo "::set-output level=minor"
+            echo "::set-output name=level::minor"
           fi
           if [ $label == "Major" ]
           then
-            echo "::set-output level=major"
+            echo "::set-output name=level::major"
           fi
         done
     - name: Bump patch version and push tag
