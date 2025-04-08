@@ -19,7 +19,7 @@ env:
 jobs:
   package-and-push:
     name: Helm package with dependencies
-    runs-on: [self-hosted, main]
+    runs-on: main
     steps:
     - uses: actions/checkout@v3
     - name: Update chart version

@@ -12,7 +12,7 @@ on:
 
 jobs:
   release:
-    runs-on: [self-hosted, main]
+    runs-on: main
     outputs:
       tag: ${{ steps.tag.outputs.tag }}
     steps:
